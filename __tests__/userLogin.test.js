@@ -29,7 +29,7 @@ describe('User Login', () => {
         email: 'test2@example.com',
         password: 'password123'
       });
-
+    console.log(response.body.token,"<<<<<<<<<response.body.token")
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('user login successfully');
     expect(response.body.token).toBeDefined();
