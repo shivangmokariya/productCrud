@@ -9,8 +9,7 @@ const nodemailer=require("nodemailer");
 const router=express.Router();
 const authentication=require("../middleware/middleware")
 
-let product;
-product = require("../controller/product");
+const {addProduct,getProducts,getOneProduct,updateProduct,deleteProduct} = require("../controller/product");
 
 
 app.use(express.json());
@@ -35,11 +34,11 @@ var cpUpload_post = upload.fields([
 
 
 // console.log(registration.registration,"registration");
-router.post("/addProduct",cpUpload_post,authentication,product.addProduct);
-router.get("/getProduct",authentication,product.getProducts);
-router.get("/getOneProduct/:id",authentication,product.getOneProduct);
-router.put("/updateProduct/:id",cpUpload_post,authentication,product.updateProduct);
-router.delete("/deleteProduct/:id",authentication,product.deleteProduct);
+router.post("/addProduct",cpUpload_post,authentication,addProduct);
+router.get("/getProduct",authentication,getProducts);
+router.get("/getOneProduct/:id",authentication,getOneProduct);
+router.put("/updateProduct/:id",cpUpload_post,authentication,updateProduct);
+router.delete("/deleteProduct/:id",authentication,deleteProduct);
 
 
 
