@@ -13,7 +13,7 @@ afterAll(async () => {
 
 describe('User Registration', () => {
   afterEach(async () => {
-    await User.deleteMany({});
+    // await User.deleteMany({});
   });
 
   it('should register a new user successfully', async () => {
