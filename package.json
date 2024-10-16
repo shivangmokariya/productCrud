@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -30,5 +30,9 @@
     "nodemon": "^2.0.22",
     "uuid": "^9.0.0",
     "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }

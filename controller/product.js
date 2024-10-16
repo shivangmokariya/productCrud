@@ -250,7 +250,7 @@ module.exports.deleteProduct = async (req, res) => {
 
         const filePath = path.join(foldername, fileName);
     
-        await fs.unlink(filePath, (err) => {
+        fs.unlink(filePath, (err) => {
           if (err) {
             console.log('Something went wrong: ' + err);
             return err;
