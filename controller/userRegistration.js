@@ -1,10 +1,9 @@
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
-const User = require("../models/userRegistration");
+const { User } = require("../models"); // Adjust the import based on your structure
 
-
-//log of APIs request
+// Log of API requests
 module.exports.logRequests = (req, res, next) => {
   const { method, url } = req;
   const timestamp = new Date().toISOString();
@@ -14,86 +13,98 @@ module.exports.logRequests = (req, res, next) => {
 
 module.exports.userRegistration = async (req, res) => {
   try {
-   let {email, password}=req.body;
-    const useremail = await User.findOne({ email });
+    let { email, password } = req.body;
+
+    // Check if the user already exists
+    const useremail = await User.findOne({ where: { email } });
     if (useremail) {
-      res.send({
+      return res.status(400).send({
         status: 100,
         message: "Email already exists."
-      })
+      });
     } else {
-      // console.log(req.body);
-      const user = new User(req.body);
+      // Hash the password
       password = await bcrypt.hash(password, 10);
+      
+      // Create a new user
+      const user = await User.create({ email, password });
 
-      user.password=password;
-    
-
-      await user.save();
-      // console.log(user.password, "user");
       res.status(200).send({
-        message: "user registerd successfully",
+        message: "User registered successfully",
         status: 200,
         data: user,
       });
-      // console.log(user);
     }
-
   } catch (e) {
     console.log(e);
-    res.status(401).send({
+    res.status(500).send({
       status: 400,
-      message: "something Went wrong ", e
+      message: "Something went wrong",
+      error: e.message,
     });
   }
-}
-
+};
 
 module.exports.login = async (req, res) => {
   try {
-      const email = req.body.email;
-      const password = req.body.password;
-    if(!email || !password ){
-      res.status(400).send({
-        message: "Email And Password are required ",
+    const { email, password } = req.body;
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).send({ 
+        message: "Email and Password are required",
         status: 400,
         error: "Login details are invalid"
-      })
+      });
     }
-    if (req.body.email) {
-      // console.log(email);
-      const useremail = await User.findOne({ email });
-      // console.log(useremail, "useremail");
-      const hPassword = await bcrypt.compare(password, useremail.password);
 
-      const token = jwt.sign({ userId: useremail._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
-      if (hPassword == true) {
-        res.status(200).send({
-          message: "user login successfully",
-          status: 200,
-          data: useremail,
-          token: token
-        });
-      } else {
-        res.status(400).send({
-          message: "user not login ",
-          status: 400,
-          error: "Login details are invalid"
-        })
-      }
+    // Find the user
+    const useremail = await User.findOne({ where: { email } });
+
+    if (!useremail) {
+      return res.status(400).send({
+        message: "User not found",
+        status: 400,
+        error: "Login details are invalid"
+      });
     }
+
+    // Check the password
+    const hPassword = await bcrypt.compare(password, useremail.password);
+    if (!hPassword) {
+      return res.status(400).send({
+        message: "Invalid password",
+        status: 400,
+        error: "Login details are invalid"
+      });
+    }
+
+    // Generate a token
+    const token = jwt.sign({ userId: useremail.id }, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+    res.status(200).send({
+      message: "User logged in successfully",
+      status: 200,
+      data: useremail,
+      token: token
+    });
   } catch (e) {
-    res.status(400).send({
-      message: "user not registered ",
+    console.log(e);
+    res.status(500).send({
+      message: "Login failed",
       status: 400,
       error: "Login details are invalid",
+      errorDetail: e.message,
     });
   }
-}
-
+};
 
 module.exports.checkUser = async (decoded, result) => {
-  const userData = await User.findById(decoded.userId);
-  result(null, userData);
-  return;
+  try {
+    const userData = await User.findByPk(decoded.userId);
+    console.log(userData,"<<<<<<<<userData");
+    result(null, userData.dataValues);
+  } catch (e) {
+    result(e, null);
+  }
 };

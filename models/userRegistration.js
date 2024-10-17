@@ -1,18 +1,40 @@
-const mongoose = require("mongoose");
-const registerSchema = new mongoose.Schema({
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/connection');
+
+const User = sequelize.define('Auth', {
   email: {
-    type: String,
-    required:[true, 'Email is required.'],
-    unique: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address.']
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: {
+      msg: 'Email is already in use.',
+    },
+    validate: {
+      isEmail: {
+        msg: 'Please enter a valid email address.',
+      },
+      notEmpty: {
+        msg: 'Email is required.',
+      },
+    },
   },
   password: {
-    type: String,
-    required:  [true, 'Password is required.'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: 'Password is required.',
+      },
+    },
   },
 });
 
-const auth = new mongoose.model("auth", registerSchema);
 
-module.exports = auth;
+const syncModels = async () => {
+  await User.sync();
+  console.log('Auth table created or updated');
+};
+
+module.exports = {
+  User,
+  syncModels,
+};
