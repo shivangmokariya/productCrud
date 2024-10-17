@@ -1,5 +1,16 @@
 require('dotenv').config();
 require("./config/connection");
+
+const { connect, disconnect } = require('./config/connection');
+const { syncModels } = require('./models'); // Correctly import the models index
+
+(async () => {
+  await connect(); 
+  await syncModels(); 
+  // await disconnect(); 
+})();
+
+
 const PORT = process.env.PORT;
 const express = require("express");
 const app = express();
