@@ -14,7 +14,7 @@ module.exports.logRequests = (req, res, next) => {
 
 module.exports.userRegistration = async (req, res) => {
   try {
-   let {email, password}=req.body;
+   let {email, name, password}=req.body;
     const useremail = await User.findOne({ email });
     if (useremail) {
       res.send({
@@ -76,9 +76,9 @@ module.exports.login = async (req, res) => {
         });
       } else {
         res.status(400).send({
-          message: "user not login ",
+          // message: "user not login ",
           status: 400,
-          error: "Login details are invalid"
+          message: "Login details are invalid"
         })
       }
     }
