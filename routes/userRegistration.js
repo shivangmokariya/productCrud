@@ -37,6 +37,8 @@ var cpUpload_post = upload.fields([
 // console.log(registration.registration,"registration");
 router.post("/registration",registration.userRegistration);
 router.post("/login",registration.login);
+router.put("/update-profile",authentication,registration.updateProfile);
+router.get("/profile",authentication,registration.getProfileById);
 
 
 
