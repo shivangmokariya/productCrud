@@ -57,7 +57,7 @@ router.post('/api/validate-auth', (req, res) => {
   const token = authorization.replace('Bearer ', '').replace('bearer ', '');
 
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    jwt.verify(token, process.env.SECRET_KEY);
     return res.status(200).json({ success: true, message: "Token is valid." });
   } catch (err) {
     return res.status(401).json({ error: "Unauthorized", message: "Invalid or expired token." });
