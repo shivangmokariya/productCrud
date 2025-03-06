@@ -13,10 +13,13 @@ const registerSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required:  [true, 'Password is required.'],
+    required:  false,
     trim: true
   },
-});
+  googleId: { type: String, required: false },
+  avatar: { type: String },
+
+},{timestamps:true});
 
 const auth = new mongoose.model("auth", registerSchema);
 

@@ -1,9 +1,22 @@
 require('dotenv').config();
 require("./config/connection");
-const PORT = process.env.PORT;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const PORT = process.env.PORT || 8000;
 const express = require("express");
 const app = express();
 const cors = require('cors');
+const passport = require('passport')
+const session = require('express-session')
+
+//Middleware
+app.use(session({
+  secret: "secret",
+  resave: false ,
+  saveUninitialized: true ,
+}))
+
+app.use(passport.initialize()) // init passport on every route call
+app.use(passport.session())    //allow passport to use "express-session"
 
 const multer = require('multer');
 const bodyParser = require("body-parser");
@@ -15,6 +28,7 @@ app.use(cors());
 // Routes Require
 const register = require("./routes/userRegistration");
 const product = require("./routes/product");
+const auth = require("./routes/auth");
 
 // Serve static route for files and images
 app.use("/upload", express.static("upload"));
@@ -26,6 +40,7 @@ app.use(userRegistration.logRequests);
 // Routes Api
 app.use("/api", register);
 app.use("/api", product);
+app.use("/", auth);
 
 // Export the app for testing
 module.exports = app;
