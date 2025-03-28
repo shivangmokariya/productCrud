@@ -60,7 +60,7 @@ router.post('/api/validate-auth', (req, res) => {
     jwt.verify(token, process.env.SECRET_KEY);
     return res.status(200).json({ success: true, message: "Token is valid." });
   } catch (err) {
-    return res.status(401).json({ error: "Unauthorized", message: "Invalid or expired token." });
+    return res.status(401).json({ error: "Unauthorized", message: "Unauthorized! Login again to proceed." });
   }
 });
 

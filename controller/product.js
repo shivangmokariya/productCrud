@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const express = require("express");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const Product = require("../models/product");
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -195,7 +195,6 @@ module.exports.updateProduct = async (req, res) => {
           fs.unlinkSync(imagePath);
         });
       }
-
       // Add the uploaded file paths to the product object
       product.images = uploadedFiles;
     }
